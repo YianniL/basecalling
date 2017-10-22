@@ -43,11 +43,12 @@ class Baseline(Model):
         forward = tf.nn.rnn_cell.BasicLSTMCell(200)
         backward = tf.nn.rnn_cell.BasicLSTMCell(200)
         bi_outputs, last_encoder_state = tf.nn.bidirectional_dynamic_rnn(forward, backward, conv_encoding, sequence_length=self.sig_length, time_major=False, dtype=tf.float32)
-        print(bi_outputs)
+        bi_outputs = tf.concat(bi_outputs, -1)
+        return bi_outputs
 
-    def _decode(self, encoding): #Just 1 biLSTM for now
-        # with tf.variable_scope('decode') as scope:
-        pass                
+    def _decode(self, encoding): #Just a FC layer like in Chiron Paper for Now
+        flat_encoding = tf.reshape(encoding, (-1, config.max_seq_len*200))
+        print(flat_encoding)
 
     def _loss(self):
         pass
