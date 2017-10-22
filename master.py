@@ -45,18 +45,16 @@ def train(model):
                     batch = sess.run(next_batch)
                     signals, labels, sig_length, base_length = batch['signals'], batch['labels'], batch['sig_length'], batch['base_length'] 
                     _, loss_batch = sess.run([model.opt, model.loss], 
-                        feed_dict={model.signals: signals, model.labels:labels, model.sig_length:sig_length, model.base_length:base_length})
-
+                        feed_dict={model.signals: signals.astype(np.float32), model.labels:labels, model.sig_length:sig_length, model.base_length:base_length})
                     print('Batch Loss is ', loss_batch) 
-                
                 except tf.errors.OutOfRangeError:
                     print('End of Epoch ' + str(i+1))
                     break
 
 def main():
     model = None
-    if config.model = 'baseline':
-        model = models.baseline()
+    if config.model == 'Baseline':
+        model = models.Baseline()
     if config.train:
         model.build_graph()
         train(model)
