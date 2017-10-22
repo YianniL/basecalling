@@ -44,8 +44,10 @@ def train(model):
                 try:
                     batch = sess.run(next_batch)
                     signals, labels, sig_length, base_length = batch['signals'], batch['labels'], batch['sig_length'], batch['base_length'] 
+                    signals = signals.astype(np.float32)
+                    normalized = (signals - np.mean(signals, axis=1, keepdims=True))/np.std(signals, axis=1, keepdims=True)
                     _, loss_batch = sess.run([model.opt, model.loss], 
-                        feed_dict={model.signals: signals.astype(np.float32), model.labels:labels, model.sig_length:sig_length, model.base_length:base_length})
+                        feed_dict={model.signals: normalized, model.labels:labels, model.sig_length:sig_length, model.base_length:base_length})
                     print('Batch Loss is ', loss_batch) 
                 except tf.errors.OutOfRangeError:
                     print('End of Epoch ' + str(i+1))

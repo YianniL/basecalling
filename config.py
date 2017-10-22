@@ -9,3 +9,4 @@ model = 'Baseline'
 train = True
 batch = 32
 num_epochs = 2
+lr = .001

@@ -47,15 +47,18 @@ class Baseline(Model):
         return bi_outputs
 
     def _decode(self, encoding): #Just a FC layer like in Chiron Paper for Now
-        flat_encoding = tf.reshape(encoding, (-1, config.max_seq_len*200))
-        print(flat_encoding)
-
+        flat_encoding = tf.reshape(encoding, (-1, 400))
+        logits = tf.layers.dense(flat_encoding, 5) #CTC Loss needs another class for blank
+        self.logits = tf.reshape(logits, (-1, config.max_seq_len, 5))
+    
+    #The loss here is getting tricky, need to make label sparse, possibly requires reading in input differently
     def _loss(self):
-        pass
+        self.loss = tf.reduce_mean(tf.nn.ctc_loss(label, self.logits, self.sig_len, ctc_merge_repeated=True, time_major=False))
 
     def _train_op(self):
-        pass
+        self.opt = tf.train.AdamOptimizer(config.lr).minimize(self.loss)
 
     def _inference(self):
         encoding = self._encode()
         self._decode(encoding)
+        self._loss()
