@@ -3,6 +3,7 @@ import os
 import time 
 import tensorflow as tf
 from tensorflow.contrib.data import TFRecordDataset, Iterator
+import numpy as np
 
 import config
 import models
